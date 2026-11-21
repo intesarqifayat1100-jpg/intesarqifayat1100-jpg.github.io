@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intesar Qifayat — Computer Science & Data Analytics</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            slate: {
+              850: '#151e2e',
+              950: '#090d16',
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* Subtle background grid pattern */
+    .bg-grid {
+      background-size: 32px 32px;
+      background-image: linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+    }
+    .dark .bg-grid {
+      background-image: linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased transition-colors duration-200 bg-grid selection:bg-emerald-500/30 selection:text-emerald-300">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="flex items-center gap-2.5 bg-slate-900 dark:bg-slate-800 text-white border border-emerald-500/40 px-4 py-3 rounded-xl shadow-xl text-sm font-medium">
+      <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      <span id="toast-msg">Email copied to clipboard!</span>
+    </div>
+  </div>
+
+  <!-- Navigation Header -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-slate-950/80 border-b border-slate-200/80 dark:border-slate-800/80">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-2 font-mono font-semibold text-base tracking-tight text-slate-900 dark:text-white group">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 group-hover:scale-125 transition-transform"></span>
+        <span>intesar<span class="text-emerald-600 dark:text-emerald-400">.dev</span></span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300">
+        <a href="#research" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Research</a>
+        <a href="#projects" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Projects</a>
+        <a href="#skills" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Skills &amp; Coursework</a>
+        <a href="#leadership" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Leadership</a>
+        <a href="#contact" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Contact</a>
+      </nav>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <button id="theme-toggle" aria-label="Toggle color theme" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900 hover:border-emerald-500/50 text-slate-700 dark:text-slate-300 transition-colors">
+          <!-- Sun icon (shown in dark mode) -->
+          <svg id="icon-sun" class="w-4 h-4 hidden dark:block text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <!-- Moon icon (shown in light mode) -->
+          <svg id="icon-moon" class="w-4 h-4 block dark:hidden text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" aria-label="Open menu" class="md:hidden p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 py-3 space-y-2 text-sm font-medium">
+      <a href="#research" class="block py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900">Research Experience</a>
+      <a href="#projects" class="block py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900">Featured Projects</a>
+      <a href="#skills" class="block py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900">Skills &amp; Coursework</a>
+      <a href="#leadership" class="block py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900">Leadership &amp; Service</a>
+      <a href="#contact" class="block py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900">Contact</a>
+    </div>
+  </header>
+
+  <main id="top" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Hero Section -->
+    <section class="pt-14 pb-16 sm:pt-20 sm:pb-24 border-b border-slate-200/80 dark:border-slate-800/80">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-8 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Open to SWE Internships &amp; CS Research Roles
+          </div>
+
+          <div class="space-y-2">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+              Intesar Qifayat
+            </h1>
+            <p class="text-lg sm:text-xl font-medium text-emerald-600 dark:text-emerald-400">
+              Computer Science &amp; Data Analytics Undergraduate &bull; Texas State University
+            </p>
+          </div>
+
+          <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
+            Sophomore CS student focused on <span class="text-slate-900 dark:text-white font-medium">systems programming</span>, <span class="text-slate-900 dark:text-white font-medium">data structures &amp; algorithms</span>, and <span class="text-slate-900 dark:text-white font-medium">empirical data analysis</span>. Experienced in quantitative evaluation across 595+ international projects and academic research on AI energy efficiency.
+          </p>
+
+          <!-- Primary CTA Buttons -->
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            <a href="https://github.com/intesarqifayat1100-jpg" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-900 dark:bg-emerald-500 text-white dark:text-slate-950 font-semibold text-sm hover:opacity-90 transition-all shadow-sm">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+              </svg>
+              GitHub Profile
+            </a>
+
+            <a href="mailto:oko26@txstate.edu" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-emerald-500/60 text-slate-800 dark:text-slate-100 font-semibold text-sm transition-all">
+              <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Email Me
+            </a>
+
+            <button onclick="copyText('oko26@txstate.edu', 'Copied oko26@txstate.edu')" class="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/80 dark:bg-slate-900/70 hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono text-xs sm:text-sm transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              Copy Email
+            </button>
+          </div>
+        </div>
+
+        <!-- Academic Snapshot Card -->
+        <div class="lg:col-span-4">
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-6 shadow-sm space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <span class="font-mono text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Academic Profile</span>
+              <span class="px-2.5 py-0.5 rounded-md text-xs font-mono bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">Class of 2029</span>
+            </div>
+
+            <div class="space-y-3">
+              <div>
+                <div class="text-xs text-slate-500 dark:text-slate-400">Institution</div>
+                <div class="font-semibold text-slate-900 dark:text-white">Texas State University</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400">San Marcos, TX</div>
+              </div>
+
+              <div>
+                <div class="text-xs text-slate-500 dark:text-slate-400">Degree &amp; Minor</div>
+                <div class="font-medium text-slate-800 dark:text-slate-200 text-sm">B.S. in Computer Science</div>
+                <div class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Minor in Data Analytics</div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 pt-1">
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800">
+                  <div class="text-xs text-slate-500 dark:text-slate-400">Cumulative GPA</div>
+                  <div class="font-mono text-lg font-bold text-slate-900 dark:text-white">3.58 <span class="text-xs font-normal text-slate-500">/ 4.00</span></div>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800">
+                  <div class="text-xs text-slate-500 dark:text-slate-400">Honors</div>
+                  <div class="font-semibold text-sm text-emerald-600 dark:text-emerald-400 mt-0.5">Dean's List</div>
+                  <div class="text-[11px] text-slate-500">Fall 2025</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Research Experience Section -->
+    <section id="research" class="py-16 border-b border-slate-200/80 dark:border-slate-800/80">
+      <div class="mb-10">
+        <span class="font-mono text-xs uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-semibold">01 // Academic &amp; Empirical Work</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">Research Experience</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Research Role 1 -->
+        <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-6 sm:p-7 hover:border-emerald-500/40 transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <span class="px-2.5 py-1 rounded-lg font-mono text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">2023 – 2024</span>
+              <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Remote / International</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Research Assistant</h3>
+            <p class="text-sm font-medium text-emerald-600 dark:text-emerald-400 mb-4">International Development Project Evaluation</p>
+            <ul class="space-y-2.5 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-500 mt-1 shrink-0">&#9656;</span>
+                <span>Analyzed quantitative performance datasets across <strong>595 international projects</strong> spanning Asia, MENA, and East Africa using Microsoft Excel.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-500 mt-1 shrink-0">&#9656;</span>
+                <span>Managed, validated, and structured key performance indicators (KPIs), project identifiers, multi-year timelines, and baseline-to-target metrics.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-2">
+            <span class="px-2.5 py-1 rounded-md text-xs font-mono bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300">KPI Modeling</span>
+            <span class="px-2.5 py-1 rounded-md text-xs font-mono bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300">Microsoft Excel</span>
+            <span class="px-2.5 py-1 rounded-md text-xs font-mono bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300">Baseline Analysis</span>
+          </div>
+        </article>
+
+        <!-- Research Role 2 -->
+        <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-6 sm:p-7 hover:border-emerald-500/40 transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <span class="px-2.5 py-1 rounded-lg font-mono text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">2022 – 2023</span>
+              <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Dhaka, Bangladesh</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Research Assistant</h3>
+            <p class="text-sm font-medium text-emerald-600 dark:text-emerald-400 mb-4">Institute of Information &amp; Communication Technology (IICT), BUET</p>
+            <ul class="space-y-2.5 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-500 mt-1 shrink-0">&#9656;</span>
+                <span>Conducted specialized academic research on <strong>AI energy consumption</strong> under the supervision of Dr. Rubaiyat Hossain Mondal.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-500 mt-1 shrink-0">&#9656;</span>
+                <span>Investigated computational power profiles and energy efficiency trade-offs across machine learning workloads to support faculty research initiatives.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-2">
+            <span class="px-2.5 py-1 rounded-md text-xs font-mono bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300">AI Energy Efficiency</span>
+            <span class="px-2.5 py-1 rounded-md text-xs font-mono bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300">Academic Literature</span>
+            <span class="px-2.5 py-1 rounded-md text-xs font-mono bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300">Systems Benchmarking</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Featured Projects Section -->
+    <section id="projects" class="py-16 border-b border-slate-200/80 dark:border-slate-800/80">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-semibold">02 // Software Engineering</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">Featured C++ Projects</h2>
+        </div>
+
+        <!-- Category Filter Buttons -->
+        <div class="flex flex-wrap gap-2" id="project-filters">
+          <button data-filter="all" class="filter-btn active px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-emerald-500 text-slate-950 transition-all">All</button>
+          <button data-filter="data-structures" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-slate-200/70 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-emerald-500/40 border border-transparent transition-all">Data Structures</button>
+          <button data-filter="systems" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-slate-200/70 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-emerald-500/40 border border-transparent transition-all">Systems &amp; File I/O</button>
+          <button data-filter="cli" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-slate-200/70 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-emerald-500/40 border border-transparent transition-all">Interactive CLI</button>
+        </div>
+      </div>
+
+      <!-- Interactive BST Sandbox Highlight Card -->
+      <div class="mb-8 rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-white via-white to-emerald-50/40 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950/20 p-6 sm:p-7 shadow-sm">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200/80 dark:border-slate-800">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300">LIVE INTERACTIVE DEMO</span>
+              <span class="font-mono text-xs text-slate-500">myBST.cpp</span>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Interactive Binary Search Tree Sandbox</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">
+              Test the exact insertion, duplicate-rejection, search, and traversal logic from my C++ <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800">myBST</code> implementation directly in your browser.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <input id="bst-input" type="number" min="0" max="99" placeholder="0–99" class="w-24 px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 font-mono text-sm focus:outline-none focus:border-emerald-500" />
+            <button onclick="bstInsertUI()" class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs sm:text-sm transition-colors">Insert</button>
+            <button onclick="bstSearchUI()" class="px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-cyan-500 text-slate-800 dark:text-slate-100 font-semibold text-xs sm:text-sm transition-colors">Search</button>
+            <button onclick="bstResetUI()" class="px-3 py-2 rounded-xl text-xs font-mono text-slate-500 hover:text-rose-400 transition-colors">Reset</button>
+          </div>
+        </div>
+
+        <!-- Visualizer Canvas + Traversal Readouts -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-5 items-center">
+          <div class="lg:col-span-7 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200/80 dark:border-slate-800 p-3 overflow-x-auto">
+            <svg id="bst-svg" viewBox="0 0 520 220" class="w-full h-52 min-w-[360px]"></svg>
+          </div>
+
+          <div class="lg:col-span-5 space-y-3 font-mono text-xs">
+            <div id="bst-status" class="p-3 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-emerald-700 dark:text-emerald-400">
+              Status: Loaded sample BST [45, 22, 68, 12, 34, 55, 81].
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/80 dark:border-slate-800 space-y-2">
+              <div>
+                <span class="text-slate-500 block">inOrderTraversal (Sorted):</span>
+                <span id="bst-inorder" class="text-slate-900 dark:text-slate-100 font-semibold">12 22 34 45 55 68 81</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">preOrderTraversal:</span>
+                <span id="bst-preorder" class="text-slate-900 dark:text-slate-100">45 22 12 34 68 55 81</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">postOrderTraversal (Destructor Order):</span>
+                <span id="bst-postorder" class="text-slate-900 dark:text-slate-100">12 34 22 55 81 68 45</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="projects-grid">
+        <!-- Project 1 -->
+        <article data-category="data-structures" class="project-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-6 flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-md font-mono text-xs bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">Data Structures &amp; Algorithms</span>
+              <a href="https://github.com/intesarqifayat1100-jpg" target="_blank" rel="noopener noreferrer" class="text-slate-500 hover:text-emerald-400 transition-colors" aria-label="View on GitHub">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              </a>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Binary Search Tree &amp; Recursive Algorithms</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+              Implemented a dynamically allocated <code class="font-mono text-xs">myBST</code> class supporting iterative search/insertion, duplicate-key rejection, recursive pre/in/post-order traversals, and post-order destructor heap cleanup. Paired with <code class="font-mono text-xs">O(log n)</code> divide-and-conquer exponentiation by squaring and a recursive Tower of Hanoi solver.
+            </p>
+          </div>
+          <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+            <div class="flex flex-wrap gap-1.5">
+              <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">C++</span>
+              <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">new/delete</span>
+              <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">O(log n)</span>
+            </div>
+            <button onclick="openCodeModal('bst')" class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">Inspect Code &rarr;</button>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article data-category="systems cli" class="project-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-6 flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-md font-mono text-xs bg-cyan-500/10 text-cyan-700 dark:text-cyan-300">Systems &amp; File I/O</span>
+              <a href="https://github.com/intesarqifayat1100-jpg/supermarketSim" target="_blank" rel="noopener noreferrer" class="text-slate-500 hover:text-emerald-400 transition-colors" aria-label="View supermarketSim on GitHub">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              </a>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Supermarket Store &amp; Payroll Simulator</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+              Dual-interface CLI application reading store configuration from external text files and persisting loyalty memberships in <code class="font-mono text-xs">members.txt</code>. Features pointer-based item lookups, cent-accurate tax and wholesale profit accounting, and a password-locked employee payroll menu with 3-attempt lockout.
+            </p>
+          </div>
+          <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+            <div class="flex flex-wrap gap-1.5">
+              <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">fstream</span>
+              <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Pointers</span>
+              <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Structs</span>
+            </div>
+            <button onclick="openCodeModal('supermarket')" class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">Inspect Code &rarr;</button>
+          </div>
+        </article>
+
+        <!-- Project 3 -->
+        <article data-category="data-structures cli" class="project-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-6 flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-md font-mono text-xs bg-amber-500/10 text-amber-700 dark:text-amber-300">Record Management</span>
+              <a href="https://github.com/intesarqifayat1100-jpg/wildlife-sanctuary-manager" target="_blank" rel="noopener noreferrer" class="text-slate-500 hover:text-emerald-400 transition-colors" aria-label="View wildlife-sanctuary-manager on GitHub">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              </a>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Wildlife Sanctuary Manager</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+              Modular C++ database program managing rescued animal records via custom <code class="font-mono text-xs">Animal</code> struct arrays. Implements pass-by-reference state tracking, capacity bounds enforcement, linear search with in-place array element shifting on removal, and formatted aggregate age reporting.
+            </p>
+          </div>
+          <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+            <div class="flex flex-wrap gap-1.5">
+              <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Arrays</span>
+              <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Pass-by-Ref</span>
+              <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">iomanip</span>
+            </div>
+            <button onclick="openCodeModal('sanctuary')" class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">Inspect Code &rarr;</button>
+          </div>
+        </article>
+
+        <!-- Project 4 -->
+        <article data-category="systems cli" class="project-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-6 flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-md font-mono text-xs bg-purple-500/10 text-purple-700 dark:text-purple-300">File Streams &amp; Utilities</span>
+              <a href="https://github.com/intesarqifayat1100-jpg/PlaylistRuntimeCalculator" target="_blank" rel="noopener noreferrer" class="text-slate-500 hover:text-emerald-400 transition-colors" aria-label="View PlaylistRuntimeCalculator on GitHub">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              </a>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Playlist Runtime Calculator &amp; CLI Suite</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+              Automated file-stream utility parsing track durations from <code class="font-mono text-xs">playlist.txt</code> via <code class="font-mono text-xs">ifstream</code> and generating formatted runtime summaries in <code class="font-mono text-xs">summary.txt</code>. Accompanied by modular CLI tools including <em>Treasure Hunt Adventure</em> and <em>Password Transformer</em>.
+            </p>
+          </div>
+          <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+            <div class="flex flex-wrap gap-1.5">
+              <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">ifstream/ofstream</span>
+              <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">String Parsing</span>
+            </div>
+            <a href="https://github.com/intesarqifayat1100-jpg?tab=repositories" target="_blank" rel="noopener noreferrer" class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">All Repos &rarr;</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Technical Skills & Coursework Section -->
+    <section id="skills" class="py-16 border-b border-slate-200/80 dark:border-slate-800/80">
+      <div class="mb-10">
+        <span class="font-mono text-xs uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-semibold">03 // Foundation</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">Technical Skills &amp; Coursework</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Languages & Tools -->
+        <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-6">
+          <h3 class="font-mono text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-semibold mb-4">Languages &amp; Tools</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-medium">C++ (C++11/14)</span>
+            <span class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-medium">Microsoft Excel (Advanced)</span>
+            <span class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-medium">Git &amp; GitHub</span>
+            <span class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-medium">Linux CLI (g++)</span>
+            <span class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-medium">HTML / CSS / JS</span>
+          </div>
+        </div>
+
+        <!-- Core CS Concepts -->
+        <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-6">
+          <h3 class="font-mono text-xs uppercase tracking-wider text-cyan-600 dark:text-cyan-400 font-semibold mb-4">Core CS &amp; Analytical Concepts</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">Data Structures &amp; Algorithms</span>
+            <span class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">Dynamic Memory (new/delete)</span>
+            <span class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">Pointers &amp; Structs</span>
+            <span class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">File I/O Streams</span>
+            <span class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">KPI &amp; Baseline Modeling</span>
+          </div>
+        </div>
+
+        <!-- Relevant Coursework -->
+        <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-6">
+          <h3 class="font-mono text-xs uppercase tracking-wider text-purple-600 dark:text-purple-400 font-semibold mb-4">Texas State Coursework</h3>
+          <ul class="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <li class="flex items-center justify-between">
+              <span>Data Structures &amp; Algorithms</span>
+              <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">In Progress</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span>Computer Organization</span>
+              <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">In Progress</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span>Calculus II</span>
+              <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">In Progress</span>
+            </li>
+            <li class="flex items-center justify-between text-slate-600 dark:text-slate-400">
+              <span>Foundations of CS I &amp; II (C++)</span>
+              <span class="font-mono text-[11px]">Completed</span>
+            </li>
+            <li class="flex items-center justify-between text-slate-600 dark:text-slate-400">
+              <span>Calculus I &amp; Discrete Mathematics</span>
+              <span class="font-mono text-[11px]">Completed</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leadership & Service Section -->
+    <section id="leadership" class="py-16">
+      <div class="mb-10">
+        <span class="font-mono text-xs uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-semibold">04 // Community Impact</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">Leadership &amp; Service</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-6">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <h3 class="font-bold text-slate-900 dark:text-white">Computer Science Instructor</h3>
+            <span class="font-mono text-xs text-slate-500">2021 – 2023</span>
+          </div>
+          <p class="text-xs font-medium text-emerald-600 dark:text-emerald-400 mb-3">Uthsho Program &bull; Dhaka, Bangladesh</p>
+          <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            Designed introductory computing lessons and taught foundational digital literacy and structured problem-solving skills to over <strong>500 underprivileged students</strong>.
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-6">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <h3 class="font-bold text-slate-900 dark:text-white">Event Volunteer &amp; Logistics Coordinator</h3>
+            <span class="font-mono text-xs text-slate-500">2021</span>
+          </div>
+          <p class="text-xs font-medium text-emerald-600 dark:text-emerald-400 mb-3">DRMC IT Club — International Tech Carnival</p>
+          <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            Coordinated technical scheduling, team check-ins, and event operations for an inter-school technology competition hosting <strong>40 teams</strong> across Bangladesh.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Contact Footer -->
+  <footer id="contact" class="border-t border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900 dark:text-white">Let's Connect</h2>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+            Available for Summer/Fall SWE internships and undergraduate CS research opportunities.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm font-mono">
+          <span class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Cedar Park / San Marcos, TX</span>
+          <a href="mailto:oko26@txstate.edu" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:text-emerald-500 text-slate-700 dark:text-slate-300 transition-colors">oko26@txstate.edu</a>
+          <a href="tel:+15129619026" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:text-emerald-500 text-slate-700 dark:text-slate-300 transition-colors">+1 (512) 961-9026</a>
+          <a href="https://github.com/intesarqifayat1100-jpg" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors">github.com/intesarqifayat1100-jpg</a>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-slate-200/70 dark:border-slate-800/70 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+        <span>&copy; 2026 Intesar Qifayat. Built with HTML, Tailwind CSS &amp; Vanilla JS.</span>
+        <span>Languages: English (Fluent) &bull; Bengali (Native)</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Code Inspection Modal -->
+  <div id="code-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-4">
+    <div class="w-full max-w-2xl rounded-2xl border border-slate-700 bg-slate-900 text-slate-100 shadow-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 bg-slate-950">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+          <h3 id="modal-title" class="font-mono text-sm font-semibold">Code Snippet</h3>
+        </div>
+        <button onclick="closeCodeModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors" aria-label="Close modal">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="p-5 overflow-x-auto max-h-[70vh]">
+        <pre id="modal-code" class="font-mono text-xs leading-relaxed text-emerald-300"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Dark / Light Theme Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+
+    // 2. Mobile Navigation Drawer
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    // 3. Clipboard Copy + Toast Feedback (using fallback-safe execCommand)
+    function copyText(text, message) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast(message);
+      } catch (err) {
+        showToast('Email: ' + text);
+      }
+      document.body.removeChild(textarea);
+    }
+
+    let toastTimeout;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2600);
+    }
+
+    // 4. Project Category Filtering
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+        filterBtns.forEach(b => {
+          b.classList.remove('bg-emerald-500', 'text-slate-950');
+          b.classList.add('bg-slate-200/70', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300');
+        });
+        btn.classList.remove('bg-slate-200/70', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300');
+        btn.classList.add('bg-emerald-500', 'text-slate-950');
+
+        projectCards.forEach(card => {
+          const categories = card.getAttribute('data-category');
+          if (filter === 'all' || categories.includes(filter)) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // 5. Interactive Binary Search Tree Visualizer (mirrors myBST.cpp)
+    class BSTNode {
+      constructor(key) {
+        this.key = key;
+        this.left = null;
+        this.right = null;
+      }
+    }
+
+    class InteractiveBST {
+      constructor() {
+        this.root = null;
+      }
+      insert(k) {
+        if (this.root === null) {
+          this.root = new BSTNode(k);
+          return { inserted: true };
+        }
+        let curr = this.root;
+        let parent = null;
+        while (curr !== null) {
+          parent = curr;
+          if (k === curr.key) return { inserted: false };
+          curr = k < curr.key ? curr.left : curr.right;
+        }
+        if (k < parent.key) parent.left = new BSTNode(k);
+        else parent.right = new BSTNode(k);
+        return { inserted: true };
+      }
+      find(k) {
+        let curr = this.root;
+        const path = [];
+        while (curr !== null) {
+          path.push(curr.key);
+          if (k === curr.key) return { found: true, path };
+          curr = k < curr.key ? curr.left : curr.right;
+        }
+        return { found: false, path };
+      }
+      inOrder(node = this.root, res = []) {
+        if (!node) return res;
+        this.inOrder(node.left, res);
+        res.push(node.key);
+        this.inOrder(node.right, res);
+        return res;
+      }
+      preOrder(node = this.root, res = []) {
+        if (!node) return res;
+        res.push(node.key);
+        this.preOrder(node.left, res);
+        this.preOrder(node.right, res);
+        return res;
+      }
+      postOrder(node = this.root, res = []) {
+        if (!node) return res;
+        this.postOrder(node.left, res);
+        this.postOrder(node.right, res);
+        res.push(node.key);
+        return res;
+      }
+    }
+
+    let tree = new InteractiveBST();
+    let highlightedKey = null;
+
+    function seedTree() {
+      tree = new InteractiveBST();
+      [45, 22, 68, 12, 34, 55, 81].forEach(n => tree.insert(n));
+      highlightedKey = null;
+      renderBST();
+    }
+
+    function renderBST() {
+      const svg = document.getElementById('bst-svg');
+      svg.innerHTML = '';
+
+      function drawNode(node, x, y, offset) {
+        if (!node) return;
+        if (node.left) {
+          const lx = x - offset;
+          const ly = y + 52;
+          svg.innerHTML += `<line x1="${x}" y1="${y}" x2="${lx}" y2="${ly}" stroke="#64748b" stroke-width="1.5" />`;
+          drawNode(node.left, lx, ly, offset / 1.9);
+        }
+        if (node.right) {
+          const rx = x + offset;
+          const ry = y + 52;
+          svg.innerHTML += `<line x1="${x}" y1="${y}" x2="${rx}" y2="${ry}" stroke="#64748b" stroke-width="1.5" />`;
+          drawNode(node.right, rx, ry, offset / 1.9);
+        }
+        const isHighlighted = node.key === highlightedKey;
+        const fill = isHighlighted ? '#10b981' : '#0f172a';
+        const stroke = isHighlighted ? '#34d399' : '#38bdf8';
+        const textFill = isHighlighted ? '#022c22' : '#f8fafc';
+        svg.innerHTML += `
+          <circle cx="${x}" cy="${y}" r="16" fill="${fill}" stroke="${stroke}" stroke-width="2" />
+          <text x="${x}" y="${y + 4}" text-anchor="middle" fill="${textFill}" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">${node.key}</text>
+        `;
+      }
+
+      drawNode(tree.root, 260, 28, 125);
+      document.getElementById('bst-inorder').textContent = tree.inOrder().join(' ') || 'Empty';
+      document.getElementById('bst-preorder').textContent = tree.preOrder().join(' ') || 'Empty';
+      document.getElementById('bst-postorder').textContent = tree.postOrder().join(' ') || 'Empty';
+    }
+
+    function bstInsertUI() {
+      const input = document.getElementById('bst-input');
+      const val = parseInt(input.value, 10);
+      const status = document.getElementById('bst-status');
+      if (isNaN(val) || val < 0 || val > 99) {
+        status.textContent = 'Error: Enter an integer between 0 and 99.';
+        return;
+      }
+      const res = tree.insert(val);
+      if (res.inserted) {
+        highlightedKey = val;
+        status.textContent = `Inserted key ${val} into BST.`;
+      } else {
+        highlightedKey = val;
+        status.textContent = `${val} is an existing key. Duplicate rejected.`;
+      }
+      input.value = '';
+      renderBST();
+    }
+
+    function bstSearchUI() {
+      const input = document.getElementById('bst-input');
+      const val = parseInt(input.value, 10);
+      const status = document.getElementById('bst-status');
+      if (isNaN(val) || val < 0 || val > 99) {
+        status.textContent = 'Error: Enter an integer between 0 and 99 to search.';
+        return;
+      }
+      const res = tree.find(val);
+      if (res.found) {
+        highlightedKey = val;
+        status.textContent = `Found ${val}! Path visited: ${res.path.join(' -> ')}`;
+      } else {
+        highlightedKey = null;
+        status.textContent = `${val} is not in this BST. Checked: ${res.path.join(' -> ')}`;
+      }
+      renderBST();
+    }
+
+    function bstResetUI() {
+      seedTree();
+      document.getElementById('bst-status').textContent = 'Status: Reset to default sample BST.';
+    }
+
+    seedTree();
+
+    // 6. Code Inspection Modal
+    const codeSnippets = {
+      bst: {
+        title: 'bst.cpp — Dynamic Memory Cleanup & Iterative Insertion',
+        code: `void myBST::free_helper(BinNode* node) {
+    if (node != NULL) {
+        free_helper(node->left);
+        free_helper(node->right);
+        delete node; // Post-order heap deallocation
+    }
+}
+
+void myBST::insertToBST(int k) {
+    if (root == NULL) {
+        root = new BinNode{k, NULL, NULL};
+        return;
+    }
+    BinNode* curr = root;
+    BinNode* parent = NULL;
+    while (curr != NULL) {
+        parent = curr;
+        if (k == curr->key) return; // Reject duplicate key
+        curr = (k < curr->key) ? curr->left : curr->right;
+    }
+    BinNode* newNode = new BinNode{k, NULL, NULL};
+    if (k < parent->key) parent->left = newNode;
+    else parent->right = newNode;
+}`
+      },
+      supermarket: {
+        title: 'supermarket_sim.cpp — File-Backed Membership & Pointer Checkout',
+        code: `bool isMember(const string &name) {
+    ifstream fin("members.txt");
+    if (!fin.is_open()) return false;
+    string line, lowerName = toLower(name);
+    while (getline(fin, line)) {
+        if (toLower(line) == lowerName) {
+            fin.close();
+            return true;
+        }
+    }
+    fin.close();
+    return false;
+}
+
+// Pointer-directed item selection & cent-accurate rounding
+double unitPrice = (finalMember ? chosen->dMembersPrice : chosen->dRegularPrice);
+cartTotal += unitPrice * qty;
+*pQty += qty;`
+      },
+      sanctuary: {
+        title: 'wildlife_sanctuary.cpp — In-Place Array Shifting on Removal',
+        code: `void removeAnimal(Animal animals[], int &count) {
+    string nameToRemove;
+    getline(cin, nameToRemove);
+
+    for (int i = 0; i < count; i++) {
+        if (animals[i].name == nameToRemove) {
+            for (int j = i; j < count - 1; j++) {
+                animals[j] = animals[j + 1];
+            }
+            count--;
+            cout << "Animal " << nameToRemove << " removed." << endl;
+            break;
+        }
+    }
+}`
+      }
+    };
+
+    function openCodeModal(key) {
+      const snippet = codeSnippets[key];
+      if (!snippet) return;
+      document.getElementById('modal-title').textContent = snippet.title;
+      document.getElementById('modal-code').textContent = snippet.code;
+      const modal = document.getElementById('code-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeCodeModal() {
+      const modal = document.getElementById('code-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    document.getElementById('code-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'code-modal') closeCodeModal();
+    });
+  </script>
+</body>
+</html>
